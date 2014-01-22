@@ -35,19 +35,13 @@ Using the plugin once installed
 == Changelog ==
 
 = 1.1.0 =
-
 Release to WordPress.org plugins
 
 = 1.0.1 =
-
 Change capability to 'edit_posts' 
 
 = 1.0-release =
-
 Initial release to VIP plugins.
 
-= 0.9-beta =
-
 = 0.8-beta =
-
 Initial release preview.
