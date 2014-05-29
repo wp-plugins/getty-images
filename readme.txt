@@ -3,7 +3,7 @@ Contributors: Getty Images
 Tags: image library, media, images, getty
 Requires at least: 3.5
 Tested up to: 3.8
-Stable tag: 1.1.0
+Stable tag: 2.0
 License: GPLv2 or later
 
 Search and use Getty Images photos in your posts without ever leaving WordPress.
@@ -14,16 +14,21 @@ Getty Images is among the world’s leading creators and distributors of award-w
 
 The Getty Images WordPress plugin integrates seamlessly with your Wordpress 3.5+ Media Manager and lets you create posts with photos and illustrations from Getty Images – without ever leaving your WordPress site.
 
-Features include:
+With 2.0, users can now access over 35 million embeddable images for editorial use on their WordPress.org site, for free.
 
-*	Search millions of photos, vectors and illustrations, customized to your Getty Images account
+New users:
 
-*	Download and preview comp images before you post.  
+* Access to over 35 million embeddable images, available for editorial use and at no cost to you.
 
-*	Download, insert and publish any size image using your existing agreement with Getty Images.
+Getty Images customers can access and license imagery:
 
-*	Licensed images are saved to your Media Library for future use.
+* Search millions of photos, vectors and illustrations, customized to your Getty Images account.
 
+* Download and preview comp images before you post.
+
+* Download, insert and publish any size image using your existing agreement with Getty Images.
+
+* Licensed images are saved to your Media Library for future use.
 
 Using the plugin once installed
 
@@ -31,9 +36,9 @@ Using the plugin once installed
 
 2.	Select Getty Images above the composition area, or access Getty Images from the Media tab.
 
-3.	Start searching for images to add to your post. Login your Getty Images account to download images for preview or publication, and to access your content and active agreements. 
+3.  For users who wish to embed images in their blog: Select Access Embeddable Images. Start searching for images that fit your needs. Select Embed into Post. Publish!
 
-4.	Not a Getty Images customer? [Contact us](http://www.gettyimages.com/Corporate/ContactUs.aspx) for details.
+4.  For customers: Select the Getty Images Customer option. Login your Getty Images account to download images for preview or publication, and to access your content and active agreements. Start searching, downloading and using!
 
 == Installation ==
 
@@ -44,6 +49,9 @@ Using the plugin once installed
 3. Click on "Getty Images" in edit post screen to browse the Getty Images library.
 
 == Changelog ==
+
+= 2.0 = 
+Major update to give access to Embeddable assets for any Wordpress.org user.
 
 = 1.1.0 =
 Release to WordPress.org plugins.

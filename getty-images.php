@@ -11,7 +11,7 @@ Version: 1.1.0
 /*  Copyright 2014  Getty Images
 
     This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License, version 2, as 
+    it under the terms of the GNU General Public License, version 2, as
     published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
@@ -69,7 +69,18 @@ class Getty_Images {
 
 		// Allow for validation of comp images
 		add_filter( 'contains_getty_comp', array( $this, 'filter_contains_getty_comp' ), 0, 2 );
+
+		// Register shorcodes
+		add_action( 'init', array( $this, 'action_init' ) );
 	}
+
+  /**
+   * Register shortcodes
+   */
+  function action_init() {
+    //add_shortcode( 'getty_embed', array( $this, 'getty_embed_image' ) );
+    wp_oembed_add_provider( 'http://gty.im/*', 'http://embed.gettyimages.com/oembed' );
+  }
 
 	// Convenience methods for adding 'message' data to standard
 	// WP JSON responses
@@ -106,7 +117,7 @@ class Getty_Images {
 	}
 
 	/**
-	 * Enqueue all assets used for admin view. Localize scripts. 
+	 * Enqueue all assets used for admin view. Localize scripts.
 	 */
 	function admin_enqueue() {
 		global $pagenow;
@@ -121,10 +132,12 @@ class Getty_Images {
 		wp_register_script( 'jquery-cookie', plugins_url( '/js/jquery.cookie.js', __FILE__ ), array( 'jquery' ), '2006', true );
 
 		wp_enqueue_script( 'spin-js', plugins_url( '/js/spin.js', __FILE__ ), array(), 1, true );
+		wp_enqueue_script( 'getty-omniture-scode', plugins_url( '/js/s_code.js', __FILE__ ), array(), 1, true );
 		wp_enqueue_script( 'getty-images-filters', plugins_url( '/js/getty-filters.js', __FILE__ ), array(), 1, true );
 		wp_enqueue_script( 'getty-images-views', plugins_url( '/js/getty-views.js', __FILE__ ), array( 'getty-images-filters', 'spin-js' ), 1, true );
-		wp_enqueue_script( 'getty-images-models', plugins_url( '/js/getty-models.js', __FILE__ ), array( 'jquery-cookie' ), 1, true );
-		wp_enqueue_script( 'getty-images', plugins_url( '/js/getty-images.js', __FILE__ ), array( 'getty-images-views', 'getty-images-models' ), 1, true );
+		wp_enqueue_script( 'getty-images-models', plugins_url( '/js/getty-models.js', __FILE__ ), array( 'jquery-cookie', 'getty-omniture-scode' ), 1, true );
+		wp_enqueue_script( 'getty-images', plugins_url( '/js/getty-images.js', __FILE__ ), array( 'getty-images-views', 'getty-images-models', 'getty-omniture-scode' ), 1, true );
+
 
 		wp_enqueue_style( 'getty-images', plugins_url( '/getty-images.css', __FILE__ ) );
 
@@ -133,6 +146,7 @@ class Getty_Images {
 			array(
 				'nonce' => wp_create_nonce( 'getty-images' ),
 				'sizes' => $this->get_possible_image_sizes(),
+				'isWPcom' => function_exists( 'wpcom_is_vip' ) && wpcom_is_vip(),
 				'text' => array(
 					// Getty Images search field placeholder
 					'searchPlaceholder' => __( "Enter keywords...", 'getty-images' ),
@@ -170,6 +184,7 @@ class Getty_Images {
 
 					//// Frame toolbar buttons
 					'insertComp' => __( "Insert Comp into Post", 'getty-images' ),
+					'embedImage' => __( "Embed Image into Post", 'getty-images' ),
 					'insertImage' => __( "Insert Image into Post", 'getty-images' ),
 					'selectImage' => __( "Select Image", 'getty-images' ),
 
@@ -205,7 +220,7 @@ class Getty_Images {
 	 * @action media_buttons
 	 */
 	function media_buttons( $editor_id = 'content' ) { ?>
-		<a href="#" id="insert-getty-button" class="button getty-images add_media" 
+		<a href="#" id="insert-getty-button" class="button getty-images-activate add_media" 
 			data-editor="<?php echo esc_attr( $editor_id ); ?>"
 			title="<?php esc_attr_e( "Getty Images...", 'getty-images' ); ?>"><span class="getty-media-buttons-icon"></span><?php esc_html_e( "Getty Images...", 'getty-images' ); ?></a>
 	<?php
@@ -217,7 +232,7 @@ class Getty_Images {
 	 * @filter contains_getty_images_comp
 	 * @return bool
 	 */
-	function filter_contains_getty_images_comp( $contains_comp, $content ) { 
+	function filter_contains_getty_images_comp( $contains_comp, $content ) {
 		return $this->contains_comp( $content );
 	}
 
@@ -337,12 +352,12 @@ class Getty_Images {
 		}
 
 		// Set the post_content to post_excerpt for this new attachment, since
-		// the field put in post_content is meant to be used as a caption for Getty 
+		// the field put in post_content is meant to be used as a caption for Getty
 		// Images.
 		//
-		// We would normally use a filter like wp_insert_post_data to do this, 
-		// preventing an extra query, but unfortunately media_handle_sideload() 
-		// uses wp_insert_attachment() to insert the attachment data, and there is 
+		// We would normally use a filter like wp_insert_post_data to do this,
+		// preventing an extra query, but unfortunately media_handle_sideload()
+		// uses wp_insert_attachment() to insert the attachment data, and there is
 		// no way to filter the data going in via that function.
 		$attachment = get_post( $attachment_id );
 
@@ -350,13 +365,16 @@ class Getty_Images {
 			$this->ajax_error( __( "Attachment not found", 'getty-images' ) );
 		}
 
+    $post_parent = isset( $_POST['post_id'] ) ? (int) $_POST['post_id'] : 0;
+
 		wp_update_post( array(
 			'ID' => $attachment->ID,
 			'post_content' => '',
-			'post_excerpt' => $attachment->post_content
+      'post_excerpt' => $attachment->post_content,
+      'post_parent' => $post_parent
 		) );
 
-		// Trash any existing attachment for this Getty Images image. Don't force 
+		// Trash any existing attachment for this Getty Images image. Don't force
 		// delete since posts may be using the image. Let the user force file delete explicitly.
 		$getty_id = sanitize_text_field( $_POST['meta']['ImageId'] );
 
@@ -404,7 +422,7 @@ class Getty_Images {
 		unset( $possible_sizes['full'] );
 
 		foreach( $possible_sizes as $size => $label ) {
-			$possible_sizes[$size] = array( 
+			$possible_sizes[$size] = array(
 				'width' => get_option( $size . '_size_w' ),
 				'height' => get_option( $size . '_size_h' ),
 				'label' => $label

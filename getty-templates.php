@@ -57,12 +57,21 @@
 
 	<div class="getty-title-links">
 		<# var loggedIn = gettyImages.user.get('loggedIn'); #>
-		<a class="getty-login-toggle {{ loggedIn ? 'getty-logged-in' : '' }}">{{ loggedIn ? gettyImages.user.get('username') : "<?php esc_html_e( "Log in", 'getty-images' ); ?>" }}</a>
-		<a class="getty-about-link"><?php esc_html_e( "About", 'getty-images' ); ?></a>
-		<a class="getty-privacy-link" target="_getty" href="http://www.gettyimages.com/Corporate/PrivacyPolicy.aspx"><?php esc_html_e( "Privacy Policy", 'getty-images' ); ?></a>
-	</div>
+		<# if(gettyImages.isWPcom || data.mode == 'login' && loggedIn) { #>
+		<span class="getty-title-link">
+			<a class="getty-login-toggle getty-title-link {{ loggedIn ? 'getty-logged-in' : '' }}">{{ loggedIn ? gettyImages.user.get('username') : "<?php esc_html_e( "Log in", 'getty-images' ); ?>" }}</a>
+			<div class="getty-user-session"></div>
+		</span>
+		<# } #>
+		<# if(!gettyImages.isWPcom && data.mode == 'login' && !loggedIn) { #>
+			<a class="getty-title-link getty-mode-change">Change Mode</a>
+		<# } else if(!gettyImages.isWPcom && data.mode == 'embed') { #>
+			<a class="getty-title-link getty-mode-change">Go to Customer Login</a>
+		<# } #>
 
-	<div class="getty-user-session"></div>
+		<a class="getty-title-link getty-about-link"><?php esc_html_e( "About", 'getty-images' ); ?></a>
+		<a class="getty-title-link getty-privacy-link" target="_getty" href="http://www.gettyimages.com/Corporate/PrivacyPolicy.aspx"><?php esc_html_e( "Privacy Policy", 'getty-images' ); ?></a>
+	</div>
 </script>
 
 <script type="text/html" id="tmpl-getty-about-text">
@@ -135,10 +144,10 @@
 </script>
 
 <script type="text/html" id="tmpl-getty-download-authorizations">
-<# if(!gettyImages.user.get('loggedIn')) { #>
+<# if(gettyImages.user.settings.get('mode') != 'embed' && !gettyImages.user.get('loggedIn')) { #>
 	<p><?php _e( "Log in to download images", 'getty-images' ); ?></p>
 <# }
-else if(data.DownloadAuthorizations) { #>
+else if(gettyImages.user.get('loggedIn') && data.DownloadAuthorizations) { #>
 	<div class="getty-download-authorizations">
 		<ul class="getty-download-with">
 		<# 
@@ -348,6 +357,7 @@ else if(data.authorizing) { #>
 </script>
 
 <script type="text/html" id="tmpl-getty-display-settings">
+<# if(gettyImages.isWPcom || gettyImages.user.get('loggedIn')) { #>
 	<h3><?php esc_html_e( "Display Options", 'getty-images' ); ?></h3>
 
 	<div class="setting align">
@@ -385,13 +395,22 @@ else if(data.authorizing) { #>
 
 	<label class="setting alt-text">
 		<span><?php _e('Alt Text'); ?></span>
-		<input type="text" data-setting="alt" value="{{ data.model.alt }}" data-user-setting="getty_align" />
+		<input type="text" data-setting="alt" value="{{ data.model.alt }}" data-user-setting="getty_alt" />
 	</label>
 
 	<label class="setting caption">
 		<span><?php _e('Caption'); ?></span>
 		<textarea data-setting="caption">{{ data.model.caption }}</textarea>
 	</label>
+<# } else { #>
+<dl class="getty-image-details-list">
+	<dt class="getty-image-caption"><?php _e( "Caption: ", 'getty-images' ); ?></dt>
+	<dd class="getty-image-caption"><p class="description">{{ data.model.caption }}</p></dd>
+
+	<dt class="getty-image-alt"><?php _e( "Alt Text: ", 'getty-images' ); ?></dt>
+	<dd class="getty-image-alt"><p class="description">{{ data.model.alt }}</p></dd>
+</dl>
+<# } #>
 </script>
 
 <script type="text/html" id="tmpl-getty-result-refinement-category">
@@ -448,5 +467,38 @@ else if(data.authorizing) { #>
 	<h1><?php _e( "Sorry, this browser is unsupported!", 'getty-images' ); ?></h1>
 
 	<p><?php _e( "The Getty Images plugin requires at least Internet Explorer 10 to function. This plugin also supports other modern browsers with proper CORS support such as Firefox, Chrome, Safari, Opera.", 'getty-images' ); ?></p>
+</script>
 
+<script type="text/html" id="tmpl-getty-choose-mode">
+	<# if(data.mode != 'login') { #>
+	<div class="getty-split-panel getty-embedded-mode">
+		<div class="getty-panel">
+			<div class="getty-panel-content">
+			<h1><?php _e( "Access Embeddable Images", 'getty-images' ); ?></h1>
+
+				<p><?php _e( "Choose from over <strong>35 million</strong> high-quality hosted images, available for free, non-commercial use in your WordPress site.", 'getty-images' ); ?></p>
+			</div>
+			<span class="getty-icon icon-image"></span>
+		</div>
+	</div>
+
+	<div class="getty-split-panel getty-login-mode">
+	<# } #>
+		<div class="getty-panel">
+			<div class="getty-panel-content">
+			<h1><?php _e( "Getty Images Customer", 'getty-images' ); ?></h1>
+				<p><?php _e( "Log into your Getty Images account to access all content and usage rights available in your subscription.", 'getty-images' ); ?></p>
+
+				<div class="getty-login-panel">
+				</div>
+			</div>
+			<# if(data.mode != 'login') { #>
+				<span class="getty-icon icon-unlocked"></span>
+			<# } #>
+		</div>
+
+	<# if(data.mode != 'login') { #>
+	</div>
+	<# } #>
+	</div>
 </script>

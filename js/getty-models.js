@@ -7,6 +7,7 @@
 (function($) {
 	var media = wp.media;
 	var getty = gettyImages;
+	var s = window.getty_s;
 	var GettyAttachments;
 
 	// Simple Getty API module. Relies on CORS support
@@ -23,7 +24,7 @@
 			RenewSession: 'https://connect.gettyimages.com/v1/session/RenewSession',
 			GetActiveProductOfferings: 'http://connect.gettyimages.com/v1/data/GetActiveProductOfferings',
 			GetAllProductOfferings: 'http://connect.gettyimages.com/v1/data/GetAllProductOfferings',
-			SearchForImages: 'http://connect.gettyimages.com/v1/search/SearchForImages',
+			SearchForImages: 'http://connect.gettyimages.com/v2/search/SearchForImages',
 			GetImageDetails: 'http://connect.gettyimages.com/v1/search/GetImageDetails',
 			GetLargestImageDownloadAuthorizations: 'http://connect.gettyimages.com/v1/download/GetLargestImageDownloadAuthorizations',
 			GetImageDownloadAuthorizations: 'http://connect.gettyimages.com/v1/download/GetImageDownloadAuthorizations',
@@ -39,7 +40,7 @@
 					Token: ''
 				}
 			};
-			
+
 			var url = api.endpoints[endpoint];
 			if(!url) {
 				return;
@@ -61,12 +62,12 @@
 				payload['CreateDownloadRequestBody'] = body;
 			}
 			else if(endpoint == 'SearchForImages') {
-				payload['SearchForImages2RequestBody'] = body;
+				payload['SearchForImagesRequestBody'] = body;
 			}
 			else {
 				payload[endpoint + 'RequestBody'] = body;
 			}
-	
+
 			// Defer the request until we get authentication
 			var result = $.Deferred();
 			var defer = $.Deferred();
@@ -198,7 +199,7 @@
 			if(!sizes) {
 				return;
 			}
-			
+
 			var request = {
 				ImageSizes: _.map(sizes, function(size) {
 					return {
@@ -275,17 +276,24 @@
 					// Get the URL, forward to WP for sideloading
 					getty.post( 'getty_images_download', {
 						url: response.DownloadUrls[0].UrlAttachment,
+						post_id: $('#post_ID').val(),
 						meta: meta
 					})
-						.done(function(wpresponse) { 
-							self.downloaded(wpresponse); 
+						.done(function(wpresponse) {
+							self.downloaded(wpresponse);
 						})
 						.always(function() {
 							self.unset('downloading');
 							self.unset('DownloadToken');
 
 							var refreshState = function(state) {
-								var lib = state.get('library')
+								var lib;
+								
+								if(!state) {
+									return;
+								}
+
+								lib = state.get('library');
 
 								if(!lib) {
 									return;
@@ -296,19 +304,17 @@
 								if(!r || isNaN(r)) {
 									r = 1;
 								}
-								
+
 								lib.props.set('getty-refresh', r + 1);
 							}
 
 							// Force all other attachment queries to refresh
 							for(var frame in media.frames) {
 								_.each([ 'insert', 'select', 'gallery', 'featured-image' ], function(state) {
-									if(media.frames[state]) {
-										refreshState(media.frames[state].state());
-									}
+									refreshState(media.frames[frame].state(state));
 
 									var modal = media.editor.get();
-									if(modal) { 
+									if(modal) {
 										refreshState(modal.state(state));
 									}
 								});
@@ -322,6 +328,12 @@
 			this.set('attachment', new media.model.Attachment(response));
 
 			// Clear out any cached queries in media library
+			if(s) {
+				s.events = 'event6';
+				s.prop1 = s.eVar1 = s.prop2 = s.eVar2 = '';
+				s.prop3 = s.eVar3 = this.get('ImageId');
+				s.tl();
+			}
 		},
 
 		// Get WordPress image details
@@ -397,12 +409,24 @@
 
 		// Perform a search with queued search properties
 		search: function() {
+			var searchTerm = this.propsQueue.get('search');
+
+			if(typeof searchTerm != 'string' || !searchTerm.match(/[^\s]/)) {
+				return;
+			}
+
 			if(this.propsQueue.get('Refinements') && this.propsQueue.get('Refinements').length == 0) {
 				this.propsQueue.unset('Refinements');
 			}
 
-			var query = media.model.GettyQuery.get(this.propsQueue.toJSON());
+			if(getty.user.settings.get('mode') == 'embed') {
+				this.propsQueue.set('EmbedContentOnly', "true");
+			}
+			else {
+				this.propsQueue.unset('EmbedContentOnly');
+			}
 
+			var query = media.model.GettyQuery.get(this.propsQueue.toJSON());
 
 			if(query !== this.mirroring) {
 				this.reset();
@@ -414,6 +438,13 @@
 				this.results.set('searched', false);
 
 				this.mirror(query);
+
+				if(s) {
+					s.events = 'event2';
+					s.prop1 = s.eVar1 = s.prop3 = s.eVar3 = '';
+					s.prop2 = s.eVar2 = this.props.get('search');
+					s.tl();
+				}
 			}
 
 			// Force reset of attributes for cached queries
@@ -427,7 +458,7 @@
 			search: function(attachment) {
 				if (!this.props.get('search'))
           return true;
-        
+
         return _.any(['Title', 'Caption', 'ImageId', 'UrlComp', 'ImageFamily'], function(key) {
           var value = attachment.get(key);
           return value && -1 !== value.search(this.props.get('search'));
@@ -481,7 +512,7 @@
 
 			// Build searchPhrase from any main query + refinements
 			var searchPhrase = this.props.get('search');
-			
+
 			if(this.props.get('SearchWithin')) {
 				searchPhrase += ' ' + this.props.get('SearchWithin');
 			}
@@ -507,6 +538,7 @@
 					Orientations: this.props.get('Orientations'),
 					ExcludeNudity: this.props.get('ExcludeNudity'),
 					Refinements: this.props.get('Refinements'),
+					EmbedContentOnly: this.props.get('EmbedContentOnly')
 				}
 			};
 
@@ -679,7 +711,7 @@
 			});
 
 			// Why bother with an empty set?
-			if(images.length == 0) 
+			if(images.length == 0)
 				return;
 
 			return api.request('GetLargestImageDownloadAuthorizations', {
@@ -710,7 +742,7 @@
 		}
 	}, {
 		defaultArgs: {
-			posts_per_page: 50 
+			posts_per_page: 50
 		}
 	});
 
@@ -791,6 +823,22 @@
 			loggedIn: false
 		},
 
+		initialize: function() {
+			var settings = {};
+
+			try {
+				settings = JSON.parse($.cookie('wpGIc')) || {};
+			} catch(ex) {
+			}
+
+			this.settings = new Backbone.Model(settings);
+			this.settings.on('change', this.updateUserSettings, this);
+		},
+
+		updateUserSettings: function(model, values) {
+			$.cookie('wpGIc', JSON.stringify(model));
+		},
+
 		// Create an application-level session for anonymous searching,
 		// return a promise object
 		createApplicationSession: function() {
@@ -824,7 +872,7 @@
 		},
 
 		// Restore login session from cookie.  Sets loggedIn if the session
-		// expiration has not passed yet. 
+		// expiration has not passed yet.
 		restore: function() {
 			var loginCookie = jQuery.cookie('wpGIs');
 
@@ -859,7 +907,7 @@
 								self.set('ProductOffering', result.ActiveProductOfferings[0]);
 							});
 
-						// Refresh session on a timer to keep it alive, 
+						// Refresh session on a timer to keep it alive,
 						// either immediately or when the session is 2 minutes from expiring
 						//
 						// refresh() will call restore() on success, restore() will re-set the timer
@@ -891,6 +939,13 @@
 				.done(function(result) {
 					// Stick the session data in a persistent cookie
 					self.refreshSession(result);
+
+					if(s) {
+						s.events = 'event1';
+						s.prop2 = s.eVar2 = s.prop3 = s.eVar3 = '';
+						s.prop1 = s.eVar1 = self.get('username');
+						s.tl();
+					}
 				})
 				.fail(function(statuses) {
 					self.set('loggedIn', false);
@@ -907,8 +962,8 @@
 			// Pluck the values we need to save the session.
 			var session = [
 				this.get('username'),
-				result.Token, 
-				result.SecureToken, 
+				result.Token,
+				result.SecureToken,
 				parseInt(result.TokenDurationMinutes * 60) + parseInt(new Date().getTime() / 1000)
 			];
 
@@ -938,7 +993,7 @@
 			self.refreshing = api.request('RenewSession', {
 				SystemId: api.id,
 				SystemPassword: api.key
-			})	
+			})
 				.always(function() {
 					delete self.refreshing;
 					self.set('loggingIn', false);
@@ -970,7 +1025,7 @@
 
 			// Throw away expired sessions.
 			$.cookie('wpGIs', '');
-			
+
 			// Throw away invalidated attributes
 			self.unset('session');
 			self.unset('products');
@@ -991,7 +1046,7 @@
 			this.createApplicationSession();
 		}
 	});
-	
+
 	/**
 	 * Display options based on an existing attachment
 	 */
@@ -1042,7 +1097,7 @@
 			}
 		},
 
-		// Closure-in-closure because we can't control the binding of 
+		// Closure-in-closure because we can't control the binding of
 		// 'this' with jQuery-registered event handlers
 		loadImage: function() {
 			var self = this;
@@ -1051,10 +1106,10 @@
 				var sizes = {};
 				var ar = this.width / this.height;
 
-				// Constrain image to image sizes	
+				// Constrain image to image sizes
 				_.each(gettyImages.sizes, function(size, slug) {
 					var cr = size.width / size.height;
-					var s = { label: size.label }; 
+					var s = { label: size.label };
 
 					s.url = this.src;
 
