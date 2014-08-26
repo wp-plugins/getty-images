@@ -476,7 +476,7 @@ else if(data.authorizing) { #>
 			<div class="getty-panel-content">
 			<h1><?php _e( "Access Embeddable Images", 'getty-images' ); ?></h1>
 
-				<p><?php _e( "Choose from over <strong>35 million</strong> high-quality hosted images, available for free, non-commercial use in your WordPress site.", 'getty-images' ); ?></p>
+				<p><?php _e( "Choose from over <strong>50 million</strong> high-quality hosted images, available for free, non-commercial use in your WordPress site.", 'getty-images' ); ?></p>
 			</div>
 			<span class="getty-icon icon-image"></span>
 		</div>
