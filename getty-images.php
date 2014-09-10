@@ -5,7 +5,7 @@ Plugin URI: http://thinkoomph.com/
 Description: Integrate your site with Getty Images
 Author: gettyImages
 Author URI: http://gettyimages.com/
-Version: 2.0.1
+Version: 2.1
 */
 
 /*  Copyright 2014  Getty Images
