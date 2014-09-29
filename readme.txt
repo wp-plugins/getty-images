@@ -1,9 +1,9 @@
 === Getty Images ===
 Contributors: Getty Images
 Tags: image library, media, images, getty
-Requires at least: 3.5
+Requires at least: 3.9
 Tested up to: 4.0
-Stable tag: 2.1
+Stable tag: 2.1.1
 License: GPLv2 or later
 
 Search and use Getty Images photos in your posts without ever leaving WordPress.
@@ -14,11 +14,11 @@ Getty Images is among the world’s leading creators and distributors of award-w
 
 The Getty Images WordPress plugin integrates seamlessly with your Wordpress 3.5+ Media Manager and lets you create posts with photos and illustrations from Getty Images – without ever leaving your WordPress site.
 
-With 2.0, users can now access over 35 million embeddable images for editorial use on their WordPress.org site, for free.
+With 2.0, users can now access over 50 million embeddable images for editorial use on their WordPress.org site, for free.
 
 New users:
 
-* Access to over 35 million embeddable images, available for editorial use and at no cost to you.
+* Access to over 50 million embeddable images, available for editorial use and at no cost to you.
 
 Getty Images customers can access and license imagery:
 
@@ -49,6 +49,9 @@ Using the plugin once installed
 3. Click on "Getty Images" in edit post screen to browse the Getty Images library.
 
 == Changelog ==
+
+= 2.1.1 =
+Updated library size language
 
 = 2.1 =
 Fixed compatibility with WordPress 4.0
