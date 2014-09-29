@@ -65,7 +65,7 @@
 		background: url(images/x.png) no-repeat right;
 		text-indent: 11px;
 		overflow: hidden;
-		cursor: pointer;	
+		cursor: pointer;
 	}
 	.getty-about-text p {
 		text-indent: .5em;
@@ -93,7 +93,7 @@
 		max-height: 100%;
 		overflow: auto;
 	}
-	.getty-sidebar .media-sidebar { 
+	.getty-sidebar .media-sidebar {
 		padding: 0;
 		position: static;
 		background: transparent;
@@ -154,7 +154,7 @@
 		background: url(images/x.png) no-repeat right;
 		text-indent: 11px;
 		overflow: hidden;
-		cursor: pointer;	
+		cursor: pointer;
 	}
 	.getty-images-login .getty-login-password,
 	.getty-images-login .getty-login-username {
@@ -190,8 +190,8 @@
 		}
 
 
-	.getty-browser-container { 
-		height: 100%; 
+	.getty-browser-container {
+		height: 100%;
 	}
 	.getty-attachments-browser .getty-browser-flex-container {
 		border-collapse: collapse;
@@ -201,8 +201,8 @@
 		position: relative;
 		z-index: 0;
 	}
-	.getty-search-spinner { 
-		display: none; 
+	.getty-search-spinner {
+		display: none;
 	}
 	.no-more.search-loading  .getty-search-spinner {
 		position: absolute;
@@ -227,6 +227,10 @@
 		bottom: 0;
 		transition: left 0.4s;
 	}
+		.getty-results .selected.attachment:not(.details) {
+			-webkit-box-shadow: none;
+			box-shadow: none;
+		}
 		.getty-results .attachments {
 			position: relative;
 			height: 100%;
@@ -308,7 +312,7 @@
 			margin: 0;
 		}
 
-		.getty-refine::-webkit-scrollbar { 
+		.getty-refine::-webkit-scrollbar {
 			-webkit-appearance: none;
 			width: 7px;
 		}
@@ -420,7 +424,7 @@
 		.getty-refinement-category.expanded .getty-refinement-list {
 			height: auto;
 		}
-	
+
 /* Toggle refinement */
 .getty-refine-toggle {
 	display: none;
@@ -454,8 +458,8 @@
 	}
 
 /* The user session display */
-.getty-user-panel { 
-	padding: 0 1em; 
+.getty-user-panel {
+	padding: 0 1em;
 	z-index: 76;
 	position: absolute;
 	top: 100%;
@@ -506,7 +510,9 @@
 	overflow: hidden;
 }
 	.getty-attachment .thumbnail {
-		position: relative;
+		width: 100%;
+		height: 0 !important;
+		padding-bottom: 100%;
 	}
 		.getty-attachment .thumbnail .centered img {
 			max-height: 100%;
@@ -518,6 +524,36 @@
 	}
 	.getty-attachment .image-id {
 		font-weight: bold;
+	}
+	.getty-attachment .image-details {
+		position: absolute;
+		width: 100%;
+		top: 0;
+		padding-top: 100%;
+	}
+	.media-selection .getty-attachment .thumbnail {
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+	}
+	.media-selection .attachments, .media-selection .getty-attachment {
+		overflow: visible;
+	}
+	.media-selection .attachment {
+		margin-right: 7px;
+	}
+	.media-selection .getty-attachment .image-details {
+		display: none;
+	}
+	.getty-images-more .attachment-preview {
+		display: block;
+	}
+	.getty-more-text-container {
+		position: absolute !important;
+		top: 0;
+		padding-top: 35%;
+		width: 100%;
 	}
 
 .getty-images-toolbar .search-results-total {
@@ -576,10 +612,10 @@
 			margin-bottom: .25em;
 		}
 			.getty-image-sizes dd,
-			.getty-image-sizes ul { 
-				margin: 0; padding: 0; 
+			.getty-image-sizes ul {
+				margin: 0; padding: 0;
 			}
-			.getty-image-sizes li { 
+			.getty-image-sizes li {
 				display: inline;
 				padding: .2em;
 			}
@@ -619,7 +655,7 @@
 			max-width: none !important;
 		}
 
-	.getty-images-toolbar .media-toolbar-primary .button { 
+	.getty-images-toolbar .media-toolbar-primary .button {
 		position: absolute;
 		right: 5px;
 		top: 0;
@@ -689,7 +725,7 @@
 			right: 0;
 		}
 			.getty-comp-buttons .button-primary,
-			.getty-comp-buttons a { 
+			.getty-comp-buttons a {
 				margin-right: 1em;
 			}
 		.getty-comp-license-container .getty-comp-license-chevron {
@@ -821,7 +857,7 @@
 	.have-refinements.refining .getty-refine {
 		width: 150px;
 	}
-	.getty-refine { 
+	.getty-refine {
 		font-size: .8em;
 	}
 	.have-refinements.refining .getty-results {

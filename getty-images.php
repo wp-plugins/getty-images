@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin name: Getty Images
-Plugin URI: http://thinkoomph.com/
+Plugin URI: http://www.oomphinc.com/work/getty-images-wordpress-plugin/
 Description: Integrate your site with Getty Images
 Author: gettyImages
 Author URI: http://gettyimages.com/
-Version: 2.0.1
+Version: 2.1.1
 */
 
 /*  Copyright 2014  Getty Images
@@ -220,7 +220,7 @@ class Getty_Images {
 	 * @action media_buttons
 	 */
 	function media_buttons( $editor_id = 'content' ) { ?>
-		<a href="#" id="insert-getty-button" class="button getty-images-activate add_media" 
+		<a href="#" id="insert-getty-button" class="button getty-images-activate add_media"
 			data-editor="<?php echo esc_attr( $editor_id ); ?>"
 			title="<?php esc_attr_e( "Getty Images...", 'getty-images' ); ?>"><span class="getty-media-buttons-icon"></span><?php esc_html_e( "Getty Images...", 'getty-images' ); ?></a>
 	<?php
