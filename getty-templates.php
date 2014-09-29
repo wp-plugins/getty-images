@@ -24,7 +24,7 @@
 				<span class="getty-login-spinner"></span>
 			</p>
 			<p class="no-login">
-				<?php _e( "Don't have a login?", 'getty-images' ); ?> 
+				<?php _e( "Don't have a login?", 'getty-images' ); ?>
 				<a href="https://secure.gettyimages.com/register/EnterUserInfo?AutoRedirect=true" target="_getty"><?php _e( "Sign up to Getty Images", 'getty-images' ); ?></a>
 			</p>
 			<# if(data.error) { #>
@@ -79,7 +79,7 @@
 
 <?php
 	/* TODO: Localize this text. */
-	include( __DIR__ . '/getty-about-en-us.html' ); 
+	include( __DIR__ . '/getty-about-en-us.html' );
 ?>
 
 	<p style="text-align: right">
@@ -150,10 +150,10 @@
 else if(gettyImages.user.get('loggedIn') && data.DownloadAuthorizations) { #>
 	<div class="getty-download-authorizations">
 		<ul class="getty-download-with">
-		<# 
+		<#
 		var attachment = data.attachment;
 
-		for(var po in data.DownloadAuthorizations) { 
+		for(var po in data.DownloadAuthorizations) {
 			var authorizations = _.sortBy(data.DownloadAuthorizations[po], 'FileSizeInBytes');
 		#>
 			<li class="getty-download-auth" data-productoffering="{{ po }}">
@@ -162,7 +162,7 @@ else if(gettyImages.user.get('loggedIn') && data.DownloadAuthorizations) { #>
 				var selected = data.ProductOffering == po ? 'checked="checked"' : '';
 		 	#>
 				<input type="radio" name="DownloadProductOffering" value="{{ po }}" {{ selected }} />
-			<# } #>	
+			<# } #>
 				{{ po }}
 			</label>
 
@@ -173,7 +173,7 @@ else if(gettyImages.user.get('loggedIn') && data.DownloadAuthorizations) { #>
 
 				if(auth.DownloadIsFree) {
 					note = '(' + <?php echo json_encode( __( "free", 'getty-images' ) ); ?> + ')';
-				} 
+				}
 				else if(auth.DownloadsRemaining !== null) {
 					note = '(' + auth.DownloadsRemaining + ' ' + <?php echo json_encode( __( "remaining", 'getty-images' ) ); ?> + ')';
 				}
@@ -184,7 +184,7 @@ else if(gettyImages.user.get('loggedIn') && data.DownloadAuthorizations) { #>
 				if(attachment && attachment.get('width') == auth.PixelWidth && attachment.get('height') == auth.PixelHeight) {
 					attrs = 'selected="selected" data-downloaded="true"';
 					note = <?php echo json_encode( __( "(downloaded)", 'getty-images' ) ); ?>;
-				} 
+				}
 				else {
 					if(data.SizeKeys[po] && data.SizeKeys[po] == auth.SizeKey) {
 						attrs = 'selected="selected"';
@@ -195,8 +195,8 @@ else if(gettyImages.user.get('loggedIn') && data.DownloadAuthorizations) { #>
 				} #>
 				<option {{{ attrs }}} data-downloadtoken="{{ auth.DownloadToken }}" value="{{ auth.SizeKey }}">
 					{{ auth.PixelWidth }} &times; {{ auth.PixelHeight }}
-					<# 
-						var size = auth.FileSizeInBytes; 
+					<#
+						var size = auth.FileSizeInBytes;
 
 						if(size > 1024 * 1024) {
 							size = new Number(Math.round(size / (1024 * 1024) * 10) / 10).commaString() + '\xA0MB';
@@ -219,8 +219,8 @@ else if(gettyImages.user.get('loggedIn') && data.DownloadAuthorizations) { #>
 
 	<# if(data.DownloadSizeKey) { #>
 	<div class="getty-download">
-		<# 
-			var disabled = data.downloading ? 'disabled="disabled"' : ''; 
+		<#
+			var disabled = data.downloading ? 'disabled="disabled"' : '';
 			var text = gettyImages.text.downloadImage;
 
 			if(data.attachment) {
@@ -256,7 +256,7 @@ else if(data.authorizing) { #>
 	<dd class="getty-collection">{{ data.CollectionName }}</dd>
 
 	<# if(data.downloadingDetails) { #>
-	<dt><?php _e( "Downloading Details...", 'getty-images' ); ?></dt>	
+	<dt><?php _e( "Downloading Details...", 'getty-images' ); ?></dt>
 	<# } else if(!data.haveDetails) { #>
 	<dt><?php _e( "Could not not get image details.", 'getty-images' ); ?></dt>
 	<# }#>
@@ -270,18 +270,18 @@ else if(data.authorizing) { #>
 		<dt class="getty-release-info"><?php _e( "Restrictions: ", 'getty-images' ); ?></dt>
 		<# for(var i in data.Restrictions) { #>
 		<dd class="getty-restrictions"><p class="description">{{{ data.Restrictions[i].gettyLinkifyText() }}}</p></dd>
-		<# } 
+		<# }
 	}#>
 
 	<dd class="getty-licensing">{{ data.Licensing }}</dd>
-	<# if(data.Keywords) { 
+	<# if(data.Keywords) {
 		var filter = function(kw) { return kw.Type == 'SpecificPeople'; };
 
 		var people = _.filter(data.Keywords, filter);
 		var keywords = _.reject(data.Keywords, filter);
 
 		if(people.length) {
-	#>	
+	#>
 	<dt class="getty-keywords"><?php _e( "People: ", 'getty-images' ); ?></dt>
 	<dd class="getty-keywords">
 		<ul>
@@ -292,7 +292,7 @@ else if(data.authorizing) { #>
 	</dd>
 	<# }
 		if(keywords.length) {
-	#>	
+	#>
 	<dt class="getty-keywords"><?php _e( "Keywords: ", 'getty-images' ); ?></dt>
 	<dd class="getty-keywords">
 		<ul>
@@ -308,7 +308,7 @@ else if(data.authorizing) { #>
 
 <script type="text/html" id="tmpl-getty-detail-image">
 <# if(data.ImageId) {
-	var attachment = data.attachment ? data.attachment.attributes : false; 
+	var attachment = data.attachment ? data.attachment.attributes : false;
 	var thumbUrl = '';
 
 	if(attachment) {
@@ -385,7 +385,7 @@ else if(data.authorizing) { #>
 	<label class="setting">
 		<span><?php _e('Size'); ?></span>
 		<select class="size" name="size" data-setting="size" data-user-setting="getty_imgsize">
-		<# _.each(data.model.sizes, function(size, value) { 
+		<# _.each(data.model.sizes, function(size, value) {
 			var selected = data.model.size == size ? 'selected="selected"' : '';
 			#>
 			<option value="{{ value }}" {{{ selected }}}>{{ size.label }} &ndash; {{ parseInt(size.width) }} &times; {{ parseInt(size.height) }}</option>
@@ -451,7 +451,7 @@ else if(data.authorizing) { #>
 	<p class="getty-comp-please-read"><?php esc_html_e( "Please read and accept the following terms before using image comps in your website:", 'getty-images' ); ?></p>
 	<div class="getty-comp-license-frame"><?php
 		/* TODO: Localize this text. */
-		include( __DIR__ . '/getty-comp-license.html' ); 
+		include( __DIR__ . '/getty-comp-license.html' );
 	?></div>
 	<div class="getty-comp-buttons">
 	<input type="button" class="button-primary" value="<?php esc_attr_e( "Agree" ); ?>" />
