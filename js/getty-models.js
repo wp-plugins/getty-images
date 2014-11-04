@@ -7,7 +7,6 @@
 (function($) {
 	var media = wp.media;
 	var getty = gettyImages;
-	var s = window.getty_s;
 	var GettyAttachments;
 
 	// Simple Getty API module. Relies on CORS support
@@ -325,6 +324,7 @@
 
 		// Image downloaded! Yay!
 		downloaded: function(response) {
+			var s = window.getty_s;
 			this.set('attachment', new media.model.Attachment(response));
 
 			// Clear out any cached queries in media library
@@ -332,7 +332,7 @@
 				s.events = 'event6';
 				s.prop1 = s.eVar1 = s.prop2 = s.eVar2 = '';
 				s.prop3 = s.eVar3 = this.get('ImageId');
-				s.tl();
+				getty.tl();
 			}
 		},
 
@@ -409,7 +409,8 @@
 
 		// Perform a search with queued search properties
 		search: function() {
-			var searchTerm = this.propsQueue.get('search');
+			var searchTerm = this.propsQueue.get('search'),
+				s = window.getty_s;
 
 			if(typeof searchTerm != 'string' || !searchTerm.match(/[^\s]/)) {
 				return;
@@ -443,7 +444,7 @@
 					s.events = 'event2';
 					s.prop1 = s.eVar1 = s.prop3 = s.eVar3 = '';
 					s.prop2 = s.eVar2 = this.props.get('search');
-					s.tl();
+					getty.tl();
 				}
 			}
 
@@ -925,6 +926,8 @@
 		},
 
 		login: function(password) {
+			var s = window.getty_s;
+
 			this.set('loggingIn', true);
 			this.unset('error');
 
@@ -944,7 +947,7 @@
 						s.events = 'event1';
 						s.prop2 = s.eVar2 = s.prop3 = s.eVar3 = '';
 						s.prop1 = s.eVar1 = self.get('username');
-						s.tl();
+						getty.tl();
 					}
 				})
 				.fail(function(statuses) {
