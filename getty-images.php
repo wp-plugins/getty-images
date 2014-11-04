@@ -5,7 +5,7 @@ Plugin URI: http://www.oomphinc.com/work/getty-images-wordpress-plugin/
 Description: Integrate your site with Getty Images
 Author: gettyImages
 Author URI: http://gettyimages.com/
-Version: 2.1.1
+Version: 2.2.1
 */
 
 /*  Copyright 2014  Getty Images
@@ -131,13 +131,30 @@ class Getty_Images {
 
 		wp_register_script( 'jquery-cookie', plugins_url( '/js/jquery.cookie.js', __FILE__ ), array( 'jquery' ), '2006', true );
 
+		$isWPcom = self::isWPcom();
+
+		// Determine if the Omniture Javascript should be loaded
+		$load_omniture = true;
+		if ( $isWPcom ) {
+			$settings = isset( $_COOKIE['wpGIc'] ) ? json_decode( stripslashes( $_COOKIE['wpGIc'] ) ) : false;
+			if ( isset( $settings->{'omniture-opt-in'} ) && ! $settings->{'omniture-opt-in'} ) {
+				// Don't load the s_code script if the user has opted out
+				$load_omniture = false;
+			}
+		}
+
 		wp_enqueue_script( 'spin-js', plugins_url( '/js/spin.js', __FILE__ ), array(), 1, true );
-		wp_enqueue_script( 'getty-omniture-scode', plugins_url( '/js/s_code.js', __FILE__ ), array(), 1, true );
 		wp_enqueue_script( 'getty-images-filters', plugins_url( '/js/getty-filters.js', __FILE__ ), array(), 1, true );
 		wp_enqueue_script( 'getty-images-views', plugins_url( '/js/getty-views.js', __FILE__ ), array( 'getty-images-filters', 'spin-js' ), 1, true );
-		wp_enqueue_script( 'getty-images-models', plugins_url( '/js/getty-models.js', __FILE__ ), array( 'jquery-cookie', 'getty-omniture-scode' ), 1, true );
-		wp_enqueue_script( 'getty-images', plugins_url( '/js/getty-images.js', __FILE__ ), array( 'getty-images-views', 'getty-images-models', 'getty-omniture-scode' ), 1, true );
 
+		// Register Omniture s-code
+		wp_register_script( 'getty-omniture-scode', apply_filters( 'getty_images_s_code_js_url', plugins_url( '/js/s_code.js', __FILE__ ) ), array(), 1, true );
+
+		// Optionally load it as a dependency
+		$models_depend = $load_omniture ? array( 'jquery-cookie', 'getty-omniture-scode' ) : array( 'jquery-cookie' );
+
+		wp_enqueue_script( 'getty-images-models', plugins_url( '/js/getty-models.js', __FILE__ ), $models_depend, 1, true );
+		wp_enqueue_script( 'getty-images', plugins_url( '/js/getty-images.js', __FILE__ ), array( 'getty-images-views', 'getty-images-models' ), 1, true );
 
 		wp_enqueue_style( 'getty-images', plugins_url( '/getty-images.css', __FILE__ ) );
 
@@ -146,7 +163,7 @@ class Getty_Images {
 			array(
 				'nonce' => wp_create_nonce( 'getty-images' ),
 				'sizes' => $this->get_possible_image_sizes(),
-				'isWPcom' => function_exists( 'wpcom_is_vip' ) && wpcom_is_vip(),
+				'isWPcom' => $isWPcom,
 				'text' => array(
 					// Getty Images search field placeholder
 					'searchPlaceholder' => __( "Enter keywords...", 'getty-images' ),
@@ -212,6 +229,10 @@ class Getty_Images {
 				)
 			)
 		);
+	}
+
+	static function isWPcom() {
+		return isset( $_GET['gettyTestWPcomIsVip'] ) || ( function_exists( 'wpcom_is_vip' ) && wpcom_is_vip() );
 	}
 
 	/**
@@ -470,4 +491,5 @@ class Getty_Images {
 		$this->ajax_success( __( "Got image details", 'getty-images' ), wp_prepare_attachment_for_js( $posts[0] ) );
 	}
 }
+
 Getty_Images::instance();

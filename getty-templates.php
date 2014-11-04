@@ -57,7 +57,7 @@
 
 	<div class="getty-title-links">
 		<# var loggedIn = gettyImages.user.get('loggedIn'); #>
-		<# if(gettyImages.isWPcom || data.mode == 'login' && loggedIn) { #>
+		<# if((gettyImages.isWPcom && gettyImages.user.settings.get('omniture-opt-in') !== undefined) || data.mode == 'login' && loggedIn) { #>
 		<span class="getty-title-link">
 			<a class="getty-login-toggle getty-title-link {{ loggedIn ? 'getty-logged-in' : '' }}">{{ loggedIn ? gettyImages.user.get('username') : "<?php esc_html_e( "Log in", 'getty-images' ); ?>" }}</a>
 			<div class="getty-user-session"></div>
@@ -467,6 +467,21 @@ else if(data.authorizing) { #>
 	<h1><?php _e( "Sorry, this browser is unsupported!", 'getty-images' ); ?></h1>
 
 	<p><?php _e( "The Getty Images plugin requires at least Internet Explorer 10 to function. This plugin also supports other modern browsers with proper CORS support such as Firefox, Chrome, Safari, Opera.", 'getty-images' ); ?></p>
+</script>
+
+<script type="text/html" id="tmpl-getty-welcome">
+	<h1>Welcome</h1>
+
+	<p><?php _e( "Getty Images tracks usage of this plugin via a third party tool that sets cookies in your browser. We use the statistics collected this way to help improve the plugin. However, you may opt out of this tracking, which will not affect the operation of this plugin. For more information, please <a href=\"http://www.gettyimages.com/Corporate/PrivacyPolicy.aspx\" target=\"_getty\">refer to our privacy policy</a>.", 'getty-images' ); ?></p>
+
+	<p class="getty-welcome-opt-in">
+		<label><input type="checkbox" name="getty-images-omniture-opt-in" value="1" <# if(data.optIn) { #>checked="checked"<# } #> /> Agree to third-party tracking</label>
+	</p>
+
+	<p class="getty-welcome-continue">
+		<button class="button-primary">Continue</button>
+	</p>
+
 </script>
 
 <script type="text/html" id="tmpl-getty-choose-mode">

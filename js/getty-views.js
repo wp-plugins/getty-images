@@ -7,8 +7,7 @@
 (function($) {
 	var media = wp.media;
 	var getty = gettyImages;
-	var s = window.getty_s;
-	var l10n = media.view.l10n; 
+	var l10n = media.view.l10n;
 
 	// Turn a number string into a comma-separated triplet human-readable number,
 	// used a few places throughout.
@@ -273,7 +272,8 @@
 		// Create single attachment detail view for sidebar
 		createSingle: function() {
 			var sidebar = this.sidebar,
-				single = this.options.selection.single();
+				single = this.options.selection.single(),
+				s = window.getty_s;
 
 			var attachment = single.id ? media.model.GettyAttachments.all.get(single.id) : false;
 
@@ -298,7 +298,7 @@
 					s.events = 'event3';
 					s.prop1 = s.eVar1 = s.prop2 = s.eVar2 = '';
 					s.prop3 = s.eVar3 = single.id;
-					s.tl();
+					getty.tl();
 				}
 			}
 		},
@@ -655,10 +655,10 @@
 
 			// Create user view using the globalized, persistent user model
 			if(gettyImages.isWPcom || this.controller.get('mode') == 'login') {
-				this.updateMode(this.controller, this.controller.get('mode'));
+				this.updateMode(this.controller, 'login');
 			}
 
-			getty.user.settings.on('change:mode', this.render, this);
+			getty.user.settings.on('change:mode change:omniture-opt-in', this.render, this);
 			getty.user.settings.on('change:mode', this.updateMode, this);
 
 			$(document).off('.getty-user-panel-close');
@@ -1154,7 +1154,8 @@
 		},
 
 		insertImage: function() {
-			var image = this.collection.single();
+			var image = this.collection.single(),
+				s = window.getty_s;
 
 			if(this.controller.state().get('mode') != 'embed' && !image.get('attachment')) {
 				// Show license agreement for inserting comp
@@ -1174,7 +1175,8 @@
 					s.events = 'event5';
 					s.prop1 = s.eVar1 = s.prop2 = s.eVar2 = '';
 					s.prop3 = s.eVar3 = image.get('id');
-					s.tl();
+					s.prop5 = s.eVar5 = this.controller.state().get('mode') === 'embed' ? "Embed" : "License";
+					getty.tl();
 				}
 
 				this.insert();
@@ -1182,13 +1184,14 @@
 		},
 
 		insertComp: function() {
-			var image = this.controller.state().get('selection').single();
+			var image = this.controller.state().get('selection').single(),
+				s = window.getty_s;
 
 			if(s && image) {
 				s.events = 'event4';
 				s.prop1 = s.eVar1 = s.prop2 = s.eVar2 = '';
 				s.prop3 = s.eVar3 = image.get('id');
-				s.tl();
+				getty.tl();
 			}
 
 			this.insert();
@@ -1313,6 +1316,40 @@
 			event.preventDefault();
 			this.collection.reset();
 		}
+	});
+
+	/**
+	 * Welcome screen + opt-in
+	 */
+	media.view.GettyWelcome = media.View.extend({
+		tagName:   'div',
+		className: 'getty-welcome',
+		template:  media.template('getty-welcome'),
+
+		events: {
+			'click .getty-welcome-continue button': 'save',
+		},
+
+		save: function() {
+			var checked = this.$el.find('.getty-welcome-opt-in input').prop('checked');
+
+			if ( ! checked ) {
+				delete window.getty_s;
+			}
+			getty.user.settings.set('omniture-opt-in', checked);
+		},
+
+		prepare: function() {
+			var optIn = getty.user.settings.get('omniture-opt-in');
+
+			if(optIn === undefined) {
+				optIn = true;
+			}
+
+			return {
+				optIn: optIn
+			}
+		},
 	});
 
 	/**

@@ -477,8 +477,12 @@
 		border: 1px solid #ddd;
 		background-color: #f5f5f5;
 		-webkit-transform: translate(-50%, 0);
-		left: 50%;
 	}
+@media only screen and (max-width: 900px) {
+	.getty-title-link .getty-prompt-login.getty-user-panel {
+		left: -50%;
+	}
+}
 	.getty-prompt-login .getty-user-chevron {
 		border-left: 15px solid transparent;
 		border-right: 15px solid transparent;
@@ -487,6 +491,11 @@
 		right: 10em;
 		top: -15px;
 	}
+@media only screen and (max-width: 900px) {
+	.getty-prompt-login .getty-user-chevron {
+		right: 13em;
+	}
+}
 		.getty-user-chevron span {
 			border-left: 14px solid transparent;
 			border-right: 14px solid transparent;
@@ -750,6 +759,45 @@
 .search-editorial .getty-filter-creative-sort-order {
 	display: none;
 }
+
+/**
+ * Welcome screen with opt-in
+ */
+.getty-welcome {
+	position: absolute;
+	top: 20%;
+	bottom: 20%;
+	left: 20%;
+	right: 20%;
+}
+@media only screen and (max-width: 640px), screen and (max-height: 400px) {
+	.getty-welcome {
+		top: 80px;
+		bottom: 5px;
+	}
+}
+@media only screen and (max-height: 400px) {
+	.getty-welcome {
+		top: 5px;
+	}
+}
+@media screen and (max-width: 640px) {
+	.getty-welcome {
+		left: 5px;
+		right: 5px;
+	}
+}
+	.getty-welcome-opt-in,
+	.getty-welcome-continue {
+		position: absolute;
+		bottom: 0;
+	}
+	.getty-welcome-opt-in {
+		left: 0;
+	}
+	.getty-welcome-continue {
+		right: 0;
+	}
 
 /**
  * Choose mode
