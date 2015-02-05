@@ -651,6 +651,7 @@
 		position: relative;
 		padding-top: 50px;
 		overflow: hidden;
+		max-width: none;
 }
 	.getty-images-toolbar .getty-search-input-container {
 		position: absolute;
@@ -685,6 +686,7 @@
 		height: 24px;
 		line-height: 24px;
 		margin-bottom: -1px;
+		max-width: none;
 	}
 
 .getty-filter { float: left; margin: .5em; }

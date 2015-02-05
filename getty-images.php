@@ -5,7 +5,7 @@ Plugin URI: http://www.oomphinc.com/work/getty-images-wordpress-plugin/
 Description: Integrate your site with Getty Images
 Author: gettyImages
 Author URI: http://gettyimages.com/
-Version: 2.2.1
+Version: 2.3.0
 */
 
 /*  Copyright 2014  Getty Images
@@ -78,7 +78,6 @@ class Getty_Images {
    * Register shortcodes
    */
   function action_init() {
-    //add_shortcode( 'getty_embed', array( $this, 'getty_embed_image' ) );
     wp_oembed_add_provider( 'http://gty.im/*', 'http://embed.gettyimages.com/oembed' );
   }
 
@@ -154,7 +153,7 @@ class Getty_Images {
 		$models_depend = $load_omniture ? array( 'jquery-cookie', 'getty-omniture-scode' ) : array( 'jquery-cookie' );
 
 		wp_enqueue_script( 'getty-images-models', plugins_url( '/js/getty-models.js', __FILE__ ), $models_depend, 1, true );
-		wp_enqueue_script( 'getty-images', plugins_url( '/js/getty-images.js', __FILE__ ), array( 'getty-images-views', 'getty-images-models' ), 1, true );
+		wp_enqueue_script( 'getty-images', plugins_url( '/js/getty-images.js', __FILE__ ), array( 'getty-images-views', 'getty-images-models' ), 1.1, true );
 
 		wp_enqueue_style( 'getty-images', plugins_url( '/getty-images.css', __FILE__ ) );
 
@@ -300,7 +299,10 @@ class Getty_Images {
 		}
 
 		if( $this->contains_comp( $post->post_content ) ) {
-			echo '<div class="error getty-images-message"><p>' . __( "<strong>WARNING</strong>: You may not publish posts with Getty Images comps. Download the image first in order to include it into your post.", 'getty-images' ) . '</p></div>';
+			// can't use esc_html__ since it would break the HTML tags in the string to be translated.
+			echo '<div class="error getty-images-message"><p>' . wp_kses_post(
+				__( "<strong>WARNING</strong>: You may not publish posts with Getty Images comps. Download the image first in order to include it into your post.", 'getty-images' ) )
+			. '</p></div>';
 		}
 	}
 

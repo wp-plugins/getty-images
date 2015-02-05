@@ -793,12 +793,13 @@
 			if ( ! selection )
 				return;
 
+			selection.unshift( model );
+
 			// Lop off the end if we're past 10
 			while(selection.length > 10) {
 				selection.pop();
 			}
 
-			selection.unshift( model );
 			selection.single( model );
 		},
 	});
@@ -1031,7 +1032,7 @@
 			'click .button-primary': 'login',
 			'keyup input': 'loginOnEnter',
 			'keydown input': 'tabSwitch'
-			
+
 		},
 
 		loginOnEnter: function(ev) {
@@ -1040,7 +1041,7 @@
 				this.login();
 			}
 		},
-		
+
 		tabSwitch: function(ev) {
 			if(ev.keyCode == 9) {
 				if(ev.shiftKey) {  // Backwards
@@ -1065,7 +1066,7 @@
 						this.$el.find('.getty-login-username input').focus();
 					}
 				}
-				
+
 				ev.preventDefault();
 			}
 		},

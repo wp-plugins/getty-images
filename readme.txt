@@ -3,7 +3,7 @@ Contributors: Getty Images
 Tags: image library, media, images, getty
 Requires at least: 3.9
 Tested up to: 4.0
-Stable tag: 2.2.1
+Stable tag: 2.3.0
 License: GPLv2 or later
 
 Search and use Getty Images photos in your posts without ever leaving WordPress.
@@ -50,6 +50,13 @@ Using the plugin once installed
 
 == Changelog ==
 
+= 2.3.0 =
+* Only add alignment class to img tag if there is no caption for image, like WP does otherwise.
+* Fix display problems introduced in 4.1 that causes image browser to be squished.
+* Use scheme-less URLs for many API endpoints
+* Better escaping
+* Fix bug that would allow 11 images to appear in selection queue
+
 = 2.2.1 =
 Fold in optimizations from VIP, ht Jeff Bowen @ Automattic
 
@@ -79,3 +86,8 @@ Initial release to VIP plugins.
 
 = 0.8-beta =
 Initial release preview.
+
+== Upgrade Notice ==
+
+= 2.3.0 =
+Fixes display bugs in WordPress 4.1 and address https/http security issues when accessing the Getty Connect API.
