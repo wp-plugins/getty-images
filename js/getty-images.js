@@ -232,7 +232,7 @@
 		},
 
 		insert: function() {
-			var image = this.get('selection').single(),
+			var image = this.get('selection').single(), 
 					embed_code;
 
 			if(!image) {
@@ -270,7 +270,7 @@
 					$img.attr('alt', alt);
 				}
 
-				if(align != 'none' && ! caption) {
+				if(align != 'none') {
 					$img.addClass('align' + align);
 				}
 
