@@ -79,7 +79,7 @@
 						var tokens = session ? session : getty.user.anonymous;
 
 						// Choose correct session token based on request protocol
-						if(url.match(/^https:/)) {
+						if(url.match(/^https:/) || (url.match(/^\/\//) && location.protocol === 'https:')) {
 							payload.RequestHeader.Token = tokens.secure;
 						}
 						else {
@@ -113,7 +113,7 @@
 				});
 
 			// Try unauthenticated credentials for requests with no session or https
-			if(!session && url.match(/^http:/)) {
+			if(!session && !url.match(/^https:/)) {
 				getty.user.createApplicationSession()
 					.done(defer.resolve)
 					.fail(defer.reject);

@@ -496,7 +496,10 @@ else if(data.authorizing) { #>
 			<div class="getty-panel-content">
 			<h1><?php esc_html_e( "Access Embeddable Images", 'getty-images' ); ?></h1>
 
-				<p><?php esc_html_e( "Choose from over <strong>50 million</strong> high-quality hosted images, available for free, non-commercial use in your WordPress site.", 'getty-images' ); ?></p>
+				<p><?php echo wp_kses_post(
+					__("Choose from over <strong>50 million</strong> high-quality hosted images, available for free, non-commercial use in your WordPress site.", 'getty-images' )
+				);
+				?></p>
 			</div>
 			<span class="getty-icon icon-image"></span>
 		</div>

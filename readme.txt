@@ -2,7 +2,7 @@
 Contributors: Getty Images
 Tags: image library, media, images, getty
 Requires at least: 3.9
-Tested up to: 4.0
+Tested up to: 4.1
 Stable tag: 2.3.0
 License: GPLv2 or later
 
