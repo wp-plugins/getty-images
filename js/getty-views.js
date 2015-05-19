@@ -288,7 +288,8 @@
 
 				var displayOptions = {
 					model: this.model.display(attachment),
-					priority: 200,
+					// for non-logged in users, put the display options higher
+					priority: (!gettyImages.isWPcom && !gettyImages.user.get('loggedIn')) ? 50 : 200,
 					userSettings: true
 				};
 

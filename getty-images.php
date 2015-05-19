@@ -72,6 +72,10 @@ class Getty_Images {
 
 		// Register shorcodes
 		add_action( 'init', array( $this, 'action_init' ) );
+		// Handle shortcode alignment
+		add_filter( 'embed_oembed_html', array( $this, 'align_embed' ), 10, 4 );
+		// Add styles for alignment
+		add_action( 'wp_head', array( $this, 'frontend_style' ) );
 	}
 
   /**
@@ -80,6 +84,44 @@ class Getty_Images {
   function action_init() {
     wp_oembed_add_provider( 'http://gty.im/*', 'http://embed.gettyimages.com/oembed' );
   }
+
+	/**
+	 * Filter embed shortcode html
+	 * @param  string $html    html generated from embed shortcode
+	 * @param  string $url     original oembed URL
+	 * @param  array $attr     shortcode attributes
+	 * @param  integer $post_ID post id
+	 * @return string          modified or original html
+	 */
+	function align_embed( $html, $url, $attr, $post_ID ) {
+		// check that this is a getty embed
+		if ( strpos( $url, 'http://gty.im/' ) === 0 ) {
+			if ( isset( $attr['align'] ) && in_array( $attr['align'], array( 'left', 'center', 'right' ) ) ) {
+				// container div must be displayed as block, rather than inline-block for center align
+				if ( $attr['align'] == 'center' ) {
+					$html = preg_replace( '/^(<div[^>]*)inline-block/', '$1block', $html );
+				}
+				return str_replace( 'class="', 'class="' . esc_attr( 'align' . $attr['align'] ) . ' ', $html );
+			}
+		}
+		return $html;
+	}
+
+	/**
+	 * Print some frontend styles for getty embeds that are aligned
+	 */
+	function frontend_style() {
+		?>
+		<style>
+		.getty.alignleft {
+			margin-right: 5px;
+		}
+		.getty.alignright {
+			margin-left: 5px;
+		}
+		</style>
+		<?php
+	}
 
 	// Convenience methods for adding 'message' data to standard
 	// WP JSON responses
@@ -162,6 +204,10 @@ class Getty_Images {
 			array(
 				'nonce' => wp_create_nonce( 'getty-images' ),
 				'sizes' => $this->get_possible_image_sizes(),
+				'embedSizes' => array(
+					'scale50' => array( 'scale' => 0.50, 'label' => __( 'Scaled 50%', 'getty-images' ) ),
+					'scale75' => array( 'scale' => 0.75, 'label' => __( 'Scaled 75%', 'getty-images' ) ),
+				),
 				'isWPcom' => $isWPcom,
 				'text' => array(
 					// Getty Images search field placeholder
@@ -225,6 +271,13 @@ class Getty_Images {
 
 					'bestMatch' => __( "Best Match", 'getty-images' ),
 					'newest' => __( "Newest", 'getty-images' ),
+
+					'alignments' => array(
+						'none' => __( 'None', 'getty-images' ),
+						'left' => __( 'Left', 'getty-images' ),
+						'center' => __( 'Center', 'getty-images' ),
+						'right' => __( 'Right', 'getty-images' ),
+					),
 				)
 			)
 		);

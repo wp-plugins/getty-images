@@ -644,6 +644,10 @@
 				bottom: 0;
 				width: 40px;
 			}
+		.getty-embed-attachment-details {
+			border-bottom: 1px solid #ddd;
+			padding-bottom: 11px;
+		}
 
 /* Top-level search form */
 .getty-images-toolbar .media-toolbar-primary {
